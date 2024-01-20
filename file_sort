@@ -1,0 +1,48 @@
+import os
+import shutil
+
+
+def join_path(path, name='', name1=''):
+    return os.path.join(path, name)
+
+
+def file_sort(path):
+    folder_names = []
+    file_names = []
+    #sort existing files and folders
+    for string in os.listdir(path):
+        if os.path.isfile(join_path(path, string)):
+            file_names.append(string)
+        elif os.path.isdir(join_path(path, string)):
+            folder_names.append(string)
+
+    #check whether there is new extension which not yet been added to folder_names
+    for string in file_names:
+        _, file_extension = os.path.splitext(string)
+        if f'{file_extension} files' not in folder_names:
+            folder_names.append(f'{file_extension} files')
+
+    for folder in folder_names:
+        folder_path = join_path(path, folder)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+        for file_name in file_names:
+            _, file_extension = os.path.splitext(file_name)
+            #check if the final path exists and whether the file correspond to its folder
+            if not os.path.exists(join_path(folder_path, file_name)) and file_extension in folder:
+                shutil.move(join_path(path, file_name), join_path(folder_path, file_name))
+            elif os.path.exists(join_path(folder_path, file_name)):
+                print(f'{file_name} - The file had been inserted into the folder')
+
+
+def main():
+    #check whether the path exists before executing the file_sort function
+    directory_path = r"C:/Users/lemzh/Documents/Python/Trial/"
+    if os.path.exists(directory_path):
+        file_sort(directory_path)
+    else:
+        print(f"The directory '{directory_path}' does not exist.")
+
+
+if __name__ == "__main__":
+    main()
